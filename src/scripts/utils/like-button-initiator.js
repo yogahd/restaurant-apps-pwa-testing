@@ -1,8 +1,9 @@
-import FavoriteIdb from '../data/database-idb';
+import FavIdb from '../data/database-idb';
 
 const LikeButtonInitiator = {
   async init({ likeButtonContainer, data }) {
     this._likeButtonContainer = likeButtonContainer;
+    this._favIdb = FavIdb;
     this._data = data;
 
     await this._renderButton();
@@ -11,6 +12,7 @@ const LikeButtonInitiator = {
   async _renderButton() {
     const { id } = this._data;
     console.log(this._data);
+
     if (await this._isDataExist(id)) {
       this._renderLiked();
     } else {
@@ -19,8 +21,8 @@ const LikeButtonInitiator = {
   },
 
   async _isDataExist(id) {
-    const movie = await FavoriteIdb.getFavorite(id);
-    return !!movie;
+    const resto = await this._favIdb.getFavorite(id);
+    return !!resto;
   },
 
   _renderLike() {
@@ -31,7 +33,7 @@ const LikeButtonInitiator = {
 
     const likeButton = document.querySelector('#likeButton');
     likeButton.addEventListener('click', async () => {
-      await FavoriteIdb.putFavorite(this._data);
+      await this._favIdb.putFavorite(this._data);
       this._renderButton();
     });
   },
@@ -44,7 +46,7 @@ const LikeButtonInitiator = {
 
     const likeButton = document.querySelector('#likedButton');
     likeButton.addEventListener('click', async () => {
-      await FavoriteIdb.deleteFavorite(this._data.id);
+      await this._favIdb.deleteFavorite(this._data.id);
       this._renderButton();
     });
   },
